@@ -13,6 +13,7 @@ exclude = ["package.json", "tests/**"]
 [dependencies]
 
 [dev-dependencies]
+semver = "1.0.22"
 
 [features]
 default = []
