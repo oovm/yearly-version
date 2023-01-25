@@ -1,5 +1,5 @@
 [package]
-name = "yearly-version"
+name = "wasi-version"
 version = "0.0.0"
 authors = ["Aster <192607617@qq.com>"]
 description = "..."
