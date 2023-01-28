@@ -1,6 +1,9 @@
-
-use core::fmt::{Display, Formatter};
-
+use crate::VersionError;
+use alloc::string::ToString;
+use core::{
+    fmt::{Display, Formatter},
+    str::FromStr,
+};
 mod convert;
 
 #[repr(C, align(8))]
@@ -11,9 +14,6 @@ pub struct Version {
     pub minor: u8,
     pub patch: u16,
 }
-
-
-
 
 impl Display for Version {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
