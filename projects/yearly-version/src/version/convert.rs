@@ -78,7 +78,6 @@ impl Version {
             None => Err(VersionError::InvalidPatch { offset: 0 })?,
         };
         let version = Version { year, major, minor, patch };
-
-        Ok()
+        Ok((version, "", 0))
     }
 }
