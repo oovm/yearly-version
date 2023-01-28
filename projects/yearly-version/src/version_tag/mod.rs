@@ -2,8 +2,10 @@ use alloc::string::String;
 use core::fmt::{Display, Formatter};
 use crate::version::Version;
 
+mod convert;
+
 #[repr(C, align(8))]
-#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[derive(Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct VersionTag {
     pub number: Version,
     pub tag: String,

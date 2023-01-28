@@ -1,6 +1,9 @@
 #[derive(Debug, Copy, Clone)]
-pub enum Error {
-    UnknownError
+pub enum VersionError {
+    MissingYear,
+    MissingMajor,
+    MissingMinor,
+    MissingPatch,
 }
 
-pub type Result<T> = core::result::Result<T, Error>;
+pub type Result<T> = core::result::Result<T, VersionError>;

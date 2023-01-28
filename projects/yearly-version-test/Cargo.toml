@@ -12,8 +12,12 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-serde = { version = "1.0.197", optional = true }
-semver = { version = "1.0.22", optional = true }
+
+
+[dependencies.yearly-version]
+version = "0.0.*"
+path = "../yearly-version"
+features = ["serde", "semver"]
 
 [features]
 default = []

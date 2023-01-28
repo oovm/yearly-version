@@ -11,5 +11,9 @@ mod errors;
 mod version;
 mod version_tag;
 
+pub use crate::errors::{VersionError, Result};
 pub use crate::version::Version;
 pub use crate::version_tag::VersionTag;
+
+#[cfg(feature = "semver")]
+pub use semver::Version as SemVer;

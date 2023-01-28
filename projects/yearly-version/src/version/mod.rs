@@ -1,7 +1,5 @@
 
-use alloc::string::String;
 use core::fmt::{Display, Formatter};
-pub use crate::errors::{Error, Result};
 
 mod convert;
 
