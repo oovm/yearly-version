@@ -1,12 +1,10 @@
 use alloc::string::String;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum VersionError {
-    InvalidYear { offset: usize },
-    InvalidMajor { offset: usize },
-    InvalidMinor { offset: usize },
-    InvalidPatch { offset: usize },
-    ExtraPart { offset: usize, extra: String },
+    MissingPart { part: String, offset: usize },
+    InvalidPart { part: String, start: usize, end: usize },
+    ExtraPart { extra: String, offset: usize },
 }
 
 pub type Result<T> = core::result::Result<T, VersionError>;

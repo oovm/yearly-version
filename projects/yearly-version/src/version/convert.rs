@@ -1,4 +1,5 @@
 use super::*;
+use core::slice::SliceIndex;
 
 impl Into<u64> for Version {
     fn into(self) -> u64 {
@@ -38,7 +39,7 @@ impl FromStr for Version {
     type Err = VersionError;
 
     fn from_str(s: &str) -> core::result::Result<Self, Self::Err> {
-        let (version, rest, offset) = Self::parse_advance(s)?;
+        let (version, rest, offset) = Self::parse_advance(s, 0)?;
         if !rest.is_empty() {
             Err(VersionError::ExtraPart { offset, extra: rest.to_string() })?
         }
@@ -47,37 +48,82 @@ impl FromStr for Version {
 }
 
 impl Version {
-    pub(crate) fn parse_advance(s: &str) -> Result<(Version, &str, usize), VersionError> {
-        let mut parts = s.split('.');
-        let year = match parts.next() {
-            Some(s) => match s.parse() {
-                Ok(o) => o,
-                Err(_) => Err(VersionError::InvalidYear { offset: 0 })?,
-            },
-            None => Err(VersionError::InvalidYear { offset: 0 })?,
-        };
-        let major = match parts.next() {
-            Some(s) => match s.parse() {
-                Ok(o) => o,
-                Err(_) => Err(VersionError::InvalidMajor { offset: 0 })?,
-            },
-            None => Err(VersionError::InvalidMajor { offset: 0 })?,
-        };
-        let minor = match parts.next() {
-            Some(s) => match s.parse() {
-                Ok(o) => o,
-                Err(_) => Err(VersionError::InvalidMinor { offset: 0 })?,
-            },
-            None => Err(VersionError::InvalidMinor { offset: 0 })?,
-        };
-        let patch = match parts.next() {
-            Some(s) => match s.parse() {
-                Ok(o) => o,
-                Err(_) => Err(VersionError::InvalidPatch { offset: 0 })?,
-            },
-            None => Err(VersionError::InvalidPatch { offset: 0 })?,
-        };
-        let version = Version { year, major, minor, patch };
-        Ok((version, "", 0))
+    pub fn parse_advance(s: &str, start: usize) -> Result<(Version, &str, usize), VersionError> {
+        let (year, rest, offset) = Self::parse_advance_year(s, start)?;
+        let (major, rest, offset) = Self::parse_advance_major(rest, offset)?;
+        let (minor, rest, offset) = Self::parse_advance_minor(rest, offset)?;
+        let (patch, rest, offset) = Self::parse_advance_patch(rest, offset)?;
+        Ok((Version { year, major, minor, patch }, rest, offset))
+    }
+    pub fn parse_advance_year(input: &str, offset: usize) -> Result<(u32, &str, usize), VersionError> {
+        match input.find('.') {
+            Some(position) => {
+                let split = unsafe { input.get_unchecked(0..position) };
+                let rest = unsafe { input.get_unchecked(position + 1..) };
+                match split.parse() {
+                    Ok(o) => Ok((o, rest, offset + position + 1)),
+                    Err(_) => {
+                        Err(VersionError::InvalidPart { part: "year".to_string(), start: offset, end: offset + position })?
+                    }
+                }
+            }
+            None => Err(VersionError::MissingPart { part: "year".to_string(), offset }),
+        }
+    }
+    pub fn parse_advance_major(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
+        match input.find('.') {
+            Some(position) => {
+                let split = unsafe { input.get_unchecked(0..position) };
+                let rest = unsafe { input.get_unchecked(position + 1..) };
+                match split.parse() {
+                    Ok(o) => Ok((o, rest, offset + position + 1)),
+                    Err(_) => {
+                        Err(VersionError::InvalidPart { part: "major".to_string(), start: offset, end: offset + position })?
+                    }
+                }
+            }
+            None => Err(VersionError::MissingPart { part: "major".to_string(), offset }),
+        }
+    }
+    pub fn parse_advance_minor(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
+        match input.find('.') {
+            Some(position) => {
+                let split = unsafe { input.get_unchecked(0..position) };
+                let rest = unsafe { input.get_unchecked(position + 1..) };
+                match split.parse() {
+                    Ok(o) => Ok((o, rest, offset + position + 1)),
+                    Err(_) => {
+                        Err(VersionError::InvalidPart { part: "minor".to_string(), start: offset, end: offset + position })?
+                    }
+                }
+            }
+            None => Err(VersionError::MissingPart { part: "minor".to_string(), offset }),
+        }
+    }
+
+    pub fn parse_advance_patch(input: &str, offset: usize) -> Result<(u16, &str, usize), VersionError> {
+        match input.find('-') {
+            Some(position) => {
+                let split = unsafe { input.get_unchecked(0..position) };
+                let rest = unsafe { input.get_unchecked(position + 1..) };
+                match split.parse() {
+                    Ok(o) => Ok((o, rest, offset + position + 1)),
+                    Err(_) => {
+                        Err(VersionError::InvalidPart { part: "patch".to_string(), start: offset, end: offset + position })?
+                    }
+                }
+            }
+            None => {
+                let position = input.len();
+                let split = input;
+                let rest = "";
+                match split.parse() {
+                    Ok(o) => Ok((o, rest, offset + position + 1)),
+                    Err(_) => {
+                        Err(VersionError::InvalidPart { part: "patch".to_string(), start: offset, end: offset + position })?
+                    }
+                }
+            }
+        }
     }
 }
