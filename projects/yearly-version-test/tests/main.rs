@@ -1,16 +1,15 @@
-use std::str::FromStr;
 use yearly_version::{
     SemVer, Version,
-    VersionError::{InvalidPart, MissingPart},
     VersionTag,
 };
 mod test_parser;
+mod test_display;
+
 #[test]
 fn ensure_size() {
     assert_eq!(std::mem::size_of::<Version>(), 8);
     assert_eq!(std::mem::size_of::<SemVer>(), 40);
 }
-
 
 #[test]
 fn cast_u64() {

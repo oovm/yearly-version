@@ -1,4 +1,8 @@
-use super::*;
+use std::str::FromStr;
+use yearly_version::{
+    Version, VersionError,
+    VersionError::{InvalidPart, MissingPart},
+};
 
 #[test]
 fn parse_initial() {
@@ -43,4 +47,19 @@ fn parse_version() {
         Ok(Version { year: 4294967295, major: 255, minor: 255, patch: 65535 })
     );
     assert_eq!(Version::from_str("4294967296.256.256.65536"), Err(InvalidPart { part: "year".to_string(), start: 0, end: 10 }));
+}
+
+#[test]
+fn parse_json() {
+    assert_eq!(from_json("0"), Ok(Version { year: 0, major: 0, minor: 0, patch: 0 }));
+    assert_eq!(from_json("1"), Ok(Version { year: 0, major: 0, minor: 0, patch: 1 }));
+    assert_eq!(from_json("65535"), Ok(Version { year: 0, major: 0, minor: 0, patch: 65535 }));
+    assert_eq!(from_json("65536"), Ok(Version { year: 0, major: 0, minor: 0, patch: 0 }));
+}
+
+pub fn from_json(s: &str) -> Result<Version, VersionError> {
+    match serde_json::from_str(s) {
+        Ok(o) => Ok(o),
+        Err(o) => Err(InvalidPart { part: o.to_string(), start: 0, end: s.len() }),
+    }
 }

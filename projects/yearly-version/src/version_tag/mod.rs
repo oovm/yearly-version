@@ -5,6 +5,8 @@ use core::{
     str::FromStr,
 };
 mod convert;
+#[cfg(feature = "serde")]
+mod ser_der;
 
 #[repr(C, align(8))]
 #[derive(Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]

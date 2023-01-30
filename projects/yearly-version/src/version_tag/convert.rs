@@ -1,3 +1,4 @@
+use crate::VersionError;
 use super::*;
 
 #[cfg(feature = "semver")]
@@ -10,5 +11,13 @@ impl Into<semver::Version> for VersionTag {
             pre: semver::Prerelease::from_str(&alloc::format!("pre.{}", self.number.patch)).unwrap(),
             build: semver::BuildMetadata::from_str(&self.tag).unwrap(),
         }
+    }
+}
+
+impl FromStr for VersionTag {
+    type Err = VersionError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        todo!()
     }
 }
