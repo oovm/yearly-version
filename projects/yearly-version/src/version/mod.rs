@@ -4,10 +4,14 @@ use core::{
     fmt::{Display, Formatter},
     str::FromStr,
 };
+
+
 mod convert;
+mod ser_der;
+
 
 #[repr(C, align(8))]
-#[derive(Copy, Clone, Debug, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct Version {
     pub year: u32,
     pub major: u8,

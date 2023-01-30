@@ -1,7 +1,9 @@
-use alloc::string::String;
-use core::fmt::{Display, Formatter};
 use crate::version::Version;
-
+use alloc::string::String;
+use core::{
+    fmt::{Display, Formatter},
+    str::FromStr,
+};
 mod convert;
 
 #[repr(C, align(8))]

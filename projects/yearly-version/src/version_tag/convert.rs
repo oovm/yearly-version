@@ -1,5 +1,4 @@
-use core::str::FromStr;
-use crate::{Version, VersionTag};
+use super::*;
 
 #[cfg(feature = "semver")]
 impl Into<semver::Version> for VersionTag {

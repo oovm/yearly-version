@@ -12,7 +12,7 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-
+serde = "1.0.197"
 
 [dependencies.yearly-version]
 version = "0.0.*"

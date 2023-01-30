@@ -1,5 +1,4 @@
 use super::*;
-use core::slice::SliceIndex;
 
 impl Into<u64> for Version {
     fn into(self) -> u64 {
@@ -16,8 +15,6 @@ impl From<u64> for Version {
 #[cfg(feature = "semver")]
 impl Into<semver::Version> for Version {
     /// Used to register to a management system based on semantic versioning,
-    ///
-    /// Since the yearly version is stricter, which always complies with semver compatibility semantics.
     fn into(self) -> semver::Version {
         semver::Version {
             major: self.year as u64,
@@ -38,8 +35,8 @@ impl Into<semver::Version> for Version {
 impl FromStr for Version {
     type Err = VersionError;
 
-    fn from_str(s: &str) -> core::result::Result<Self, Self::Err> {
-        let (version, rest, offset) = Self::parse_advance(s, 0)?;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (version, rest, offset) = Self::parse_advance_version(s, 0)?;
         if !rest.is_empty() {
             Err(VersionError::ExtraPart { offset, extra: rest.to_string() })?
         }
@@ -48,7 +45,8 @@ impl FromStr for Version {
 }
 
 impl Version {
-    pub fn parse_advance(s: &str, start: usize) -> Result<(Version, &str, usize), VersionError> {
+    /// Parse a version from a string
+    pub fn parse_advance_version(s: &str, start: usize) -> Result<(Version, &str, usize), VersionError> {
         let (year, rest, offset) = Self::parse_advance_year(s, start)?;
         let (major, rest, offset) = Self::parse_advance_major(rest, offset)?;
         let (minor, rest, offset) = Self::parse_advance_minor(rest, offset)?;
@@ -67,7 +65,7 @@ impl Version {
                     }
                 }
             }
-            None => Err(VersionError::MissingPart { part: "year".to_string(), offset }),
+            None => Err(VersionError::MissingPart { part: "major".to_string(), offset }),
         }
     }
     pub fn parse_advance_major(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
@@ -82,7 +80,7 @@ impl Version {
                     }
                 }
             }
-            None => Err(VersionError::MissingPart { part: "major".to_string(), offset }),
+            None => Err(VersionError::MissingPart { part: "minor".to_string(), offset }),
         }
     }
     pub fn parse_advance_minor(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
@@ -97,7 +95,7 @@ impl Version {
                     }
                 }
             }
-            None => Err(VersionError::MissingPart { part: "minor".to_string(), offset }),
+            None => Err(VersionError::MissingPart { part: "patch".to_string(), offset }),
         }
     }
 
