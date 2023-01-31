@@ -54,7 +54,18 @@ fn parse_json() {
     assert_eq!(from_json("0"), Ok(Version { year: 0, major: 0, minor: 0, patch: 0 }));
     assert_eq!(from_json("1"), Ok(Version { year: 0, major: 0, minor: 0, patch: 1 }));
     assert_eq!(from_json("65535"), Ok(Version { year: 0, major: 0, minor: 0, patch: 65535 }));
-    assert_eq!(from_json("65536"), Ok(Version { year: 0, major: 0, minor: 0, patch: 0 }));
+    assert_eq!(from_json("65536"), Ok(Version { year: 0, major: 0, minor: 1, patch: 0 }));
+    assert_eq!(from_json("16711680"), Ok(Version { year: 0, major: 0, minor: 255, patch: 0 }));
+    assert_eq!(from_json("16777215"), Ok(Version { year: 0, major: 0, minor: 255, patch: 65535 }));
+    assert_eq!(from_json("16777216"), Ok(Version { year: 0, major: 1, minor: 0, patch: 0 }));
+    assert_eq!(from_json("16777217"), Ok(Version { year: 0, major: 1, minor: 0, patch: 1 }));
+
+    assert_eq!(from_json("4294967295"), Ok(Version { year: 0, major: 255, minor: 255, patch: 65535 }));
+    assert_eq!(from_json("4294967296"), Ok(Version { year: 1, major: 0, minor: 0, patch: 0 }));
+    assert_eq!(from_json("4294967297"), Ok(Version { year: 1, major: 0, minor: 0, patch: 1 }));
+
+    assert_eq!(from_json("8693049262092"), Ok(Version { year: 2024, major: 2, minor: 29, patch: 12 }));
+    assert_eq!(from_json("18446744073709551615"), Ok(Version { year: 4294967295, major: 255, minor: 255, patch: 65535 }));
 }
 
 pub fn from_json(s: &str) -> Result<Version, VersionError> {

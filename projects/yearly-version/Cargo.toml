@@ -1,10 +1,11 @@
 [package]
 name = "yearly-version"
-version = "0.0.0"
+version = "0.0.1"
 authors = ["Aster <192607617@qq.com>"]
-description = "..."
-repository = "https://github.com/oovm/sub_projects"
-documentation = "https://docs.rs/sub_projects"
+description = "Rust implementation of Yearly Version"
+homepage = "https://github.com/yearly-version"
+repository = "https://github.com/yearly-version/version.rs"
+documentation = "https://docs.rs/yearly-version"
 readme = "readme.md"
 license = "MPL-2.0"
 edition = "2021"
