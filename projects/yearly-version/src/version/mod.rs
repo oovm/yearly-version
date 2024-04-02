@@ -6,6 +6,8 @@ use core::{
 };
 
 mod convert;
+#[cfg(feature = "schemars")]
+mod json_schema;
 #[cfg(feature = "serde")]
 mod ser_der;
 

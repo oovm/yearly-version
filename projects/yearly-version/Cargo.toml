@@ -1,6 +1,6 @@
 [package]
 name = "yearly-version"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Aster <192607617@qq.com>"]
 description = "Rust implementation of Yearly Version"
 homepage = "https://github.com/yearly-version"
@@ -12,8 +12,9 @@ edition = "2021"
 exclude = ["package.json", "tests/**"]
 
 [dependencies]
-serde = { version = "1.0.197", optional = true }
+serde = { version = "1.0.198", optional = true }
 semver = { version = "1.0.22", optional = true }
+schemars = { version = "0.8.16", optional = true }
 
 [features]
 default = []
