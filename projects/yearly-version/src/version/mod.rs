@@ -20,6 +20,12 @@ pub struct Version {
     pub patch: u16,
 }
 
+impl Version {
+    pub fn new(year: u32, major: u8, minor: u8, patch: u16) -> Self {
+        Self { year, major, minor, patch }
+    }
+}
+
 impl Display for Version {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "{}.{}.{}.{}", self.year, self.major, self.minor, self.patch)
