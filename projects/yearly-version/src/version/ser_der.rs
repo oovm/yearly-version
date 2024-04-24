@@ -6,7 +6,7 @@ impl Serialize for Version {
     where
         S: Serializer,
     {
-        serializer.serialize_u64((*self).into())
+        serializer.serialize_u128((*self).into())
     }
 }
 
@@ -15,6 +15,6 @@ impl<'de> Deserialize<'de> for Version {
     where
         D: Deserializer<'de>,
     {
-        Ok(u64::deserialize(deserializer)?.into())
+        Ok(u128::deserialize(deserializer)?.into())
     }
 }

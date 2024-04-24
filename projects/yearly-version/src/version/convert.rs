@@ -1,18 +1,18 @@
 use super::*;
 
-impl Into<u64> for Version {
-    fn into(self) -> u64 {
-        ((self.year as u64) << 32) | ((self.major as u64) << 24) | ((self.minor as u64) << 16) | (self.patch as u64)
+impl From<Version> for u128 {
+    fn from(value: Version) -> Self {
+        ((value.year as u128) << 96) | ((value.major as u128) << 64) | ((value.minor as u128) << 32) | (value.patch as u128)
     }
 }
 
-impl From<u64> for Version {
-    fn from(value: u64) -> Self {
-        Version {
-            year: ((value >> 32) & 0xFFFF_FFFF) as u32,
-            major: ((value >> 24) & 0xFF) as u8,
-            minor: ((value >> 16) & 0xFF) as u8,
-            patch: (value & 0xFFFF) as u16,
+impl From<u128> for Version {
+    fn from(v: u128) -> Self {
+        Self {
+            year: (v >> 96) as u32,
+            major: ((v >> 64) & 0xFFFF) as u32,
+            minor: ((v >> 32) & 0xFFFF) as u32,
+            patch: (v & 0xFFFF) as u32,
         }
     }
 }
@@ -73,7 +73,7 @@ impl Version {
             None => Err(VersionError::MissingPart { part: "major".to_string(), offset }),
         }
     }
-    pub fn parse_advance_major(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
+    pub fn parse_advance_major(input: &str, offset: usize) -> Result<(u32, &str, usize), VersionError> {
         match input.find('.') {
             Some(position) => {
                 let split = unsafe { input.get_unchecked(0..position) };
@@ -88,7 +88,7 @@ impl Version {
             None => Err(VersionError::MissingPart { part: "minor".to_string(), offset }),
         }
     }
-    pub fn parse_advance_minor(input: &str, offset: usize) -> Result<(u8, &str, usize), VersionError> {
+    pub fn parse_advance_minor(input: &str, offset: usize) -> Result<(u32, &str, usize), VersionError> {
         match input.find('.') {
             Some(position) => {
                 let split = unsafe { input.get_unchecked(0..position) };
@@ -104,7 +104,7 @@ impl Version {
         }
     }
 
-    pub fn parse_advance_patch(input: &str, offset: usize) -> Result<(u16, &str, usize), VersionError> {
+    pub fn parse_advance_patch(input: &str, offset: usize) -> Result<(u32, &str, usize), VersionError> {
         match input.find('-') {
             Some(position) => {
                 let split = unsafe { input.get_unchecked(0..position) };

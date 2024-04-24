@@ -2,10 +2,9 @@ use crate::{Version, VersionError};
 use alloc::{string::ToString, vec::Vec};
 use core::{
     fmt::{Display, Formatter},
-    ops::{Add, Range, RangeInclusive, Sub},
+    ops::{Add, RangeInclusive},
     str::FromStr,
 };
-use semver::Op;
 
 mod convert;
 #[cfg(feature = "schemars")]
@@ -25,9 +24,9 @@ pub struct VersionRequest {
 pub struct VersionConstraint {
     pub comparator: VersionComparator,
     pub year: Option<u32>,
-    pub major: Option<u8>,
-    pub minor: Option<u8>,
-    pub patch: Option<u16>,
+    pub major: Option<u32>,
+    pub minor: Option<u32>,
+    pub patch: Option<u32>,
 }
 
 #[doc = include_str!("VersionComparator.md")]
@@ -109,7 +108,7 @@ impl VersionConstraint {
 }
 
 impl VersionComparator {
-    pub fn range(&self, year: Option<u32>, major: Option<u8>, minor: Option<u8>, patch: Option<u16>) -> Option<RangeInclusive<Version>> {
+    pub fn range(&self, year: Option<u32>, major: Option<u32>, minor: Option<u32>, patch: Option<u32>) -> Option<RangeInclusive<Version>> {
         match self {
             Self::Exact | Self::Wildcard => {
                 match year {
@@ -122,19 +121,19 @@ impl VersionComparator {
                                             // 1.2.3.4 -> [1.2.3.4, 1.2.3.4]
                                             Some(patch) => Some(Version::new(year, major, minor, patch)..=Version::new(year, major, minor, patch)),
                                             // 1.2.3.* -> [1.2.3.0, 1.2.3.MAX]
-                                            None => Some(Version::new(year, major, minor, 0)..=Version::new(year, major, minor, u16::MAX)),
+                                            None => Some(Version::new(year, major, minor, 0)..=Version::new(year, major, minor, u32::MAX)),
                                         }
                                     }
                                     // 1.2.*.* -> [1.2.0.0, 1.2.MAX.MAX]
-                                    None => Some(Version::new(year, major, 0, 0)..=Version::new(year, major, u8::MAX, u16::MAX)),
+                                    None => Some(Version::new(year, major, 0, 0)..=Version::new(year, major, u32::MAX, u32::MAX)),
                                 }
                             }
                             // 1.*.*.* -> [1.0.0.0, 1.MAX.MAX.MAX]
-                            None => Some(Version::new(year, 0, 0, 0)..=Version::new(year, u8::MAX, u8::MAX, u16::MAX)),
+                            None => Some(Version::new(year, 0, 0, 0)..=Version::new(year, u32::MAX, u32::MAX, u32::MAX)),
                         }
                     }
                     // *.*.*.* -> [0.0.0.0, MAX.MAX.MAX.MAX]
-                    None => Some(Version::new(0, 0, 0, 0)..=Version::new(u32::MAX, u8::MAX, u8::MAX, u16::MAX)),
+                    None => Some(Version::new(0, 0, 0, 0)..=Version::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX)),
                 }
             }
             Self::Greater => {
@@ -142,14 +141,14 @@ impl VersionComparator {
                     Some(u32::MAX) => None,
                     Some(year) => {
                         match major {
-                            Some(u8::MAX) => None,
+                            Some(u32::MAX) => None,
                             Some(major) => {
                                 match minor {
-                                    Some(u8::MAX) => None,
+                                    Some(u32::MAX) => None,
                                     Some(minor) => {
                                         match patch {
                                             // > 1.2.3.4 -> [1.2.3.5, MAX]
-                                            Some(u16::MAX) => None,
+                                            Some(u32::MAX) => None,
                                             Some(patch) => Some(Version::new(year, major, minor, unsafe { patch.add(1) })..=Version::MAX),
                                             // > 1.2.3 -> [1.2.4.0, MAX]
                                             None => Some(Version::new(year, major, unsafe { minor.add(1) }, 0)..=Version::MAX),
@@ -222,7 +221,7 @@ impl VersionComparator {
                     // < * -> impossible
                     None => Version::new(0, 0, 0, 0),
                 };
-                let sub1 = u64::from(upper).checked_sub(1)?;
+                let sub1 = u128::from(upper).checked_sub(1)?;
                 Some(Version::MIN..=Version::from(sub1))
             }
             Self::LessEqual => {
@@ -261,7 +260,7 @@ impl VersionComparator {
             }
         }
     }
-    pub fn upper(&self, year: Option<u32>, major: Option<u8>, minor: Option<u8>, patch: Option<u16>) -> Version {
+    pub fn upper(&self, year: Option<u32>, major: Option<u32>, minor: Option<u32>, patch: Option<u32>) -> Version {
         match year {
             Some(year) => {
                 match major {
@@ -272,22 +271,22 @@ impl VersionComparator {
                                     // 1.2.3.4 -> [1.2.3.4, 1.2.3.4]
                                     Some(patch) => Version::new(year, major, minor, patch),
                                     // 1.2.3.* -> [1.2.3.0, 1.2.3.MAX]
-                                    None => Version::new(year, major, minor, u16::MAX),
+                                    None => Version::new(year, major, minor, u32::MAX),
                                 }
                             }
                             // 1.2.*.* -> [1.2.0.0, 1.2.MAX.MAX]
-                            None => Version::new(year, major, u8::MAX, u16::MAX),
+                            None => Version::new(year, major, u32::MAX, u32::MAX),
                         }
                     }
                     // 1.*.*.* -> [1.0.0.0, 1.MAX.MAX.MAX]
-                    None => Version::new(year, u8::MAX, u8::MAX, u16::MAX),
+                    None => Version::new(year, u32::MAX, u32::MAX, u32::MAX),
                 }
             }
             // *.*.*.* -> [0.0.0.0, MAX.MAX.MAX.MAX]
-            None => Version::new(u32::MAX, u8::MAX, u8::MAX, u16::MAX),
+            None => Version::new(u32::MAX, u32::MAX, u32::MAX, u32::MAX),
         }
     }
-    pub fn lower(&self, year: Option<u32>, major: Option<u8>, minor: Option<u8>, patch: Option<u16>) -> Version {
+    pub fn lower(&self, year: Option<u32>, major: Option<u32>, minor: Option<u32>, patch: Option<u32>) -> Version {
         match year {
             Some(year) => {
                 match major {

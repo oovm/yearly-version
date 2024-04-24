@@ -13,9 +13,9 @@ fn ensure_size() {
 
 #[test]
 fn cast_u64() {
-    let num: u64 = Version { year: 0, major: 0, minor: 0, patch: 0 }.into();
+    let num: u128 = Version { year: 0, major: 0, minor: 0, patch: 0 }.into();
     assert_eq!(num, 0);
-    let num: u64 = Version { year: 0, major: 0, minor: 0, patch: 1 }.into();
+    let num: u128 = Version { year: 0, major: 0, minor: 0, patch: 1 }.into();
     assert_eq!(num, 1);
 }
 

@@ -8,6 +8,6 @@ fn ready() {
 
 #[test]
 fn ensure_size() {
-    assert_eq!(std::mem::size_of::<Version>(), 8);
+    assert_eq!(std::mem::size_of::<Version>(), 16);
     assert_eq!(std::mem::size_of::<semver::Version>(), 40);
 }
