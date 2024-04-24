@@ -5,6 +5,10 @@ SemVer comparison operator: `=`, `>`, `>=`, `<`, `<=`, `~`, `^`, `*`.
 - &ensp;**`=I.J`**&emsp;&mdash;&emsp;equivalent to `>=I.J.0, <I.(J+1).0`
 - &ensp;**`=I`**&emsp;&mdash;&emsp;equivalent to `>=I.0.0, <(I+1).0.0`
 
+# Op::Wildcard
+- &ensp;**`I.J.*`**&emsp;&mdash;&emsp;equivalent to `=I.J`
+- &ensp;**`I.*`**&ensp;or&ensp;**`I.*.*`**&emsp;&mdash;&emsp;equivalent to `=I`
+
 # Op::Greater
 - &ensp;**`>I.J.K`**
 - &ensp;**`>I.J`**&emsp;&mdash;&emsp;equivalent to `>=I.(J+1).0`
@@ -40,6 +44,3 @@ SemVer comparison operator: `=`, `>`, `>=`, `<`, `<=`, `~`, `^`, `*`.
 - &ensp;**`^0.0`**&emsp;&mdash;&emsp;equivalent to `=0.0`
 - &ensp;**`^I`**&emsp;&mdash;&emsp;equivalent to `=I`
 
-# Op::Wildcard
-- &ensp;**`I.J.*`**&emsp;&mdash;&emsp;equivalent to `=I.J`
-- &ensp;**`I.*`**&ensp;or&ensp;**`I.*.*`**&emsp;&mdash;&emsp;equivalent to `=I`

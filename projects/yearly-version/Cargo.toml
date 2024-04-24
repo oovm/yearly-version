@@ -1,6 +1,6 @@
 [package]
 name = "yearly-version"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Aster <192607617@qq.com>"]
 description = "Rust implementation of Yearly Version"
 homepage = "https://github.com/yearly-version"

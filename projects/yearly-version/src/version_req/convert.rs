@@ -27,3 +27,9 @@ impl VersionRequest {
         todo!()
     }
 }
+
+impl VersionComparator {
+    pub fn parse_advance_version_comparator(s: &str, start: usize) -> Result<(VersionRequest, &str, usize), VersionError> {
+        todo!()
+    }
+}

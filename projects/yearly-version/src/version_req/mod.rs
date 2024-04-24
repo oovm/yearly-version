@@ -16,11 +16,12 @@ mod ser_der;
 #[repr(C, align(8))]
 #[derive(Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct VersionRequest {
+    /// >1.0; <2.0
     pub constraints: Vec<VersionConstraint>,
 }
 
 #[repr(C, align(8))]
-#[derive(Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct VersionConstraint {
     pub comparator: VersionComparator,
     pub year: Option<u32>,
@@ -31,21 +32,63 @@ pub struct VersionConstraint {
 
 #[doc = include_str!("VersionComparator.md")]
 #[repr(C, align(8))]
-#[derive(Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub enum VersionComparator {
+    /// ```text
+    /// =YEAR
+    /// =YEAR.MAJOR
+    /// =YEAR.MAJOR.MINOR
+    /// =YEAR.MAJOR.MINOR.PATCH
+    /// ```
     Exact,
+    /// ```text
+    /// >YEAR
+    /// >YEAR.MAJOR
+    /// >YEAR.MAJOR.MINOR
+    /// >YEAR.MAJOR.MINOR.PATCH
+    /// ```
     Greater,
+    /// ```text
+    /// >=YEAR
+    /// >=YEAR.MAJOR
+    /// >=YEAR.MAJOR.MINOR
+    /// >=YEAR.MAJOR.MINOR.PATCH
+    /// ```
     GreaterEqual,
+    /// ```text
+    /// <YEAR
+    /// <YEAR.MAJOR
+    /// <YEAR.MAJOR.MINOR
+    /// <YEAR.MAJOR.MINOR.PATCH
+    /// ```
     Less,
+    /// ```text
+    /// <=YEAR
+    /// <=YEAR.MAJOR
+    /// <=YEAR.MAJOR.MINOR
+    /// <=YEAR.MAJOR.MINOR.PATCH
+    /// ```
     LessEqual,
-    /// patch version
-    ///
-    /// **~YEAR.MAJOR.MINOR**
+    /// ```text
+    /// ~YEAR
+    /// ~YEAR.MAJOR
+    /// ~YEAR.MAJOR.MINOR
+    /// ~YEAR.MAJOR.MINOR.PATCH
+    /// ```
     Tilde,
-    /// compatible version
-    ///
-    /// **^YEAR.MAJOR.MINOR**
+    /// ```text
+    /// ^YEAR
+    /// ^YEAR.MAJOR
+    /// ^YEAR.MAJOR.MINOR.*
+    /// ^YEAR.MAJOR.MINOR.PATCH
+    /// ```
     Caret,
+    /// ```text
+    /// *
+    /// YEAR.*
+    /// YEAR.MAJOR.*
+    /// YEAR.MAJOR.MINOR.*
+    /// ```
     #[default]
     Wildcard,
 }
