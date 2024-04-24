@@ -8,19 +8,19 @@ use schemars::gen::SchemaGenerator;
 use schemars::JsonSchema;
 use schemars::schema::{InstanceType, Metadata, Schema, SchemaObject, SingleOrVec, StringValidation};
 
-impl JsonSchema for Version {
+impl JsonSchema for VersionRequest {
     fn schema_name() -> String {
-        "Version".to_owned()
+        "VersionRequest".to_owned()
     }
     fn schema_id() -> Cow<'static, str> {
-        Cow::Borrowed(concat!(module_path!(), "::", "Version"))
+        Cow::Borrowed(concat!(module_path!(), "::", "VersionRequest"))
     }
     fn json_schema(_: &mut SchemaGenerator) -> Schema {
-        let metadata = Metadata { default: Some(Value::String("0.0.0.0".to_string())), ..Default::default() };
+        let metadata = Metadata { default: Some(Value::String("*".to_string())), ..Default::default() };
         let string = StringValidation {
             max_length: None,
             min_length: None,
-            pattern: Some(r"[0-9]{1,10}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,5}".to_string()),
+            pattern: None,
         };
         Schema::Object(SchemaObject {
             metadata: Some(Box::new(metadata)),
