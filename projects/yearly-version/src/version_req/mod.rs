@@ -14,7 +14,7 @@ mod ser_der;
 
 #[repr(C, align(8))]
 #[derive(Clone, Debug, Default, Ord, PartialOrd, Eq, PartialEq, Hash)]
-pub struct VersionRequest {
+pub struct VersionRequire {
     /// >1.0; <2.0
     pub constraints: Vec<VersionConstraint>,
 }
@@ -329,7 +329,7 @@ impl Display for VersionComparator {
     }
 }
 
-impl Display for VersionRequest {
+impl Display for VersionRequire {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         todo!()
     }

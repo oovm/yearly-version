@@ -15,7 +15,7 @@ mod version_req;
 pub use crate::errors::{VersionError, Result};
 pub use crate::version::Version;
 pub use crate::version_tag::VersionTag;
-pub use crate::version_req::{VersionComparator, VersionConstraint, VersionRequest};
+pub use crate::version_req::{VersionComparator, VersionConstraint, VersionRequire};
 
 #[cfg(feature = "semver")]
 pub use semver::Version as SemVer;
